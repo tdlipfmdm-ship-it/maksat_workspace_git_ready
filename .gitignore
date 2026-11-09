@@ -1,0 +1,24 @@
+# Logs & Wagtlaýyn faýllar
+*.log
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# Maglumatlar we Storage
+/data/
+/data/storage/
+*.tmp
+*.part_*
+
+# Noutbuklar we Redaktorlar
+.vscode/
+.idea/
+.DS_Store
+
+# Docker arhiwleri
+*.tar

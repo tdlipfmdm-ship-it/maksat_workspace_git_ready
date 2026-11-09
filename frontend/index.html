@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="tk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maksat Iş Giňişligi - DICOM & Goralan Faýl Alyş-Çalşygy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <!-- Ýokarky Nawigasiýa Paneli -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo">M</div>
+      <div class="brand-info">
+        <span class="brand-title">Maksat iş giňişligi</span>
+        <span class="brand-subtitle">DICOM & Goralan Lukmançylyk Portaly</span>
+      </div>
+    </div>
+    
+    <nav class="nav-links">
+      <a href="#dicom" id="nav-dicom" class="nav-item active">DICOM</a>
+      <a href="#files" id="nav-files" class="nav-item">Faýllar</a>
+      <a href="#community" id="nav-community" class="nav-item">Jemgyýet</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn btn-primary" id="btn-open-import" onclick="location.hash='#importPanel'">
+        <span class="icon">+</span> DICOM Ýükle
+      </button>
+      <div class="user-status-badge" id="user-status">
+        <span class="status-dot online"></span>
+        <span id="user-label">Admin (Tassyklanan)</span>
+      </div>
+      <button class="btn btn-outline" id="btn-logout">Çyk</button>
+    </div>
+  </header>
+
+  <!-- Esasy Iş Meýdançasy -->
+  <main class="main-container">
+    <!-- DICOM Görüjisi (Workstation Viewer) -->
+    <section id="view-dicom" class="content-view active">
+      <div class="viewer-layout">
+        <!-- Esasy Şekil Penjiresi -->
+        <div class="viewport-card">
+          <div class="viewport-toolbar">
+            <div class="tool-group">
+              <button class="tool-btn active" data-tool="windowLevel" title="Kontrast / Aýdyňlyk (W/L)">W/L</button>
+              <button class="tool-btn" data-tool="pan" title="Süýşürmek (Pan)">Süýşür</button>
+              <button class="tool-btn" data-tool="zoom" title="Ulaltmak / Kiçeltmek">Zoom</button>
+              <button class="tool-btn" data-tool="measure" title="Ölçemek">Çyzgyç</button>
+              <button class="tool-btn" data-tool="invert" title="Reňki ters öwürmek">Invert</button>
+              <button class="tool-btn" data-tool="reset" title="Täzeden dikeltmek">Reset</button>
+            </div>
+            <div class="viewport-meta-overlay" id="viewport-meta">
+              <span>Näsag: <strong id="meta-patient">ANON_94821</strong></span>
+              <span>Modality: <strong id="meta-modality">CT (Kompýuter Tomografiýasy)</strong></span>
+              <span>Gatlak: <span id="meta-slice">1 / 1</span></span>
+            </div>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="dicomCanvas" width="512" height="512"></canvas>
+            <div class="drop-hint" id="drop-hint">
+              <div class="hint-icon">📂</div>
+              <h3>DICOM faýlyny bu ýere süýräp taşlaň</h3>
+              <p>ýa-da ýokarky "DICOM Ýükle" düwmesine basyň</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sag tarapdaky Metadata we Gural Paneli -->
+        <aside class="sidebar-card">
+          <div class="sidebar-header">
+            <h3>DICOM Tag Maglumatlary</h3>
+            <span class="badge badge-success" id="anon-badge">Anonimleşdirilen</span>
+          </div>
+          <div class="metadata-table-container">
+            <table class="data-table" id="dicom-tags-table">
+              <thead>
+                <tr>
+                  <th>Tag</th>
+                  <th>At</th>
+                  <th>Baha</th>
+                </tr>
+              </thead>
+              <tbody id="tags-tbody">
+                <tr><td>(0010,0010)</td><td>PatientName</td><td>ANONYMIZED</td></tr>
+                <tr><td>(0010,0020)</td><td>PatientID</td><td>MK-2026-904</td></tr>
+                <tr><td>(0008,0060)</td><td>Modality</td><td>CT</td></tr>
+                <tr><td>(0028,0010)</td><td>Rows</td><td>512</td></tr>
+                <tr><td>(0028,0011)</td><td>Columns</td><td>512</td></tr>
+                <tr><td>(0028,0100)</td><td>BitsAllocated</td><td>16</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Faýllar Paneli -->
+    <section id="view-files" class="content-view">
+      <div class="card-container">
+        <div class="card-header">
+          <h2>Goralan Faýl Arhiwi</h2>
+          <span class="card-desc">End-to-End şifrlenen lukmançylyk ammary</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table" id="files-table">
+            <thead>
+              <tr>
+                <th>Faýl ady</th>
+                <th>Görnüşi</th>
+                <th>Göwrümi</th>
+                <th>Ýüklenen senesi</th>
+                <th>Status</th>
+                <th>Amal</th>
+              </tr>
+            </thead>
+            <tbody id="files-tbody">
+              <tr>
+                <td>study_chest_ct_anon.dcm</td>
+                <td>DICOM</td>
+                <td>42.5 MB</td>
+                <td>2026-11-10 03:15</td>
+                <td><span class="badge badge-success">Goralan</span></td>
+                <td><button class="btn btn-sm btn-outline" onclick="loadSampleDicom()">Aç</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Jemgyýet we Hasap Paneli -->
+    <section id="view-community" class="content-view">
+      <div class="card-container auth-card">
+        <div class="badge-category">HASAP · RUGSATLAR · ARAGATNAŞYK</div>
+        <h2>Bir iş giňişligi. Dolandyrylýan giriş.</h2>
+        <p class="subtitle">Lukmançylyk maglumatlaryny goralan şertlerde paýlaşyň we seljeriň.</p>
+        
+        <div class="auth-box">
+          <div class="auth-icon">🛡️</div>
+          <h3>Goralan ulgam</h3>
+          <p>Täze ulanyjy administrator tassyklamasyny alansoň doly ygtyýarly bolýar.</p>
+          <div class="status-alert">
+            <span class="icon">ℹ️</span>
+            <span>Rugsatlar her soragda serwer tarapynda barlanýar.</span>
+          </div>
+          <button class="btn btn-sso" id="btn-sso-login">
+            <span class="sso-icon">⚡</span> ChatGPT arkaly gir
+          </button>
+        </div>
+
+        <footer class="legal-footer">
+          <p>⚠️ Admin tassyklamasy özbaşdak kliniki ygtyýarnama däldir.</p>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <!-- Import Paneli Modaly (#importPanel) -->
+  <div class="modal-backdrop" id="import-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>DICOM Faýlyny Import Etmek</h3>
+        <button class="btn-close" onclick="location.hash='#dicom'">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="file-input" accept=".dcm,.dicom,application/dicom" multiple style="display: none;">
+          <div class="upload-zone-content" onclick="document.getElementById('file-input').click()">
+            <div class="zone-icon">📥</div>
+            <h4>Faýly saýlaň ýa-da şu ýere süýräň</h4>
+            <p>.dcm, .dicom lukmançylyk formatlary goldanýar</p>
+          </div>
+        </div>
+
+        <div class="security-options">
+          <label class="toggle-control">
+            <input type="checkbox" id="toggle-anonymize" checked>
+            <span class="control-label">
+              <strong>Awotomatik Anonimizasiýa (PHI Filter):</strong>
+              <small>Näsagyň şahsy maglumatlaryny (ady, ID-si, senesi) serwere iberilmezden öň brauzerde arassalamak</small>
+            </span>
+          </label>
+        </div>
+
+        <div class="upload-progress-container" id="progress-container" style="display: none;">
+          <div class="progress-info">
+            <span id="progress-text">Şifrlenýär we böleklere bölünýär...</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="location.hash='#dicom'">Ýatyr</button>
+        <button class="btn btn-primary" id="btn-start-upload" disabled>Ýüklemegi Başlat</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
