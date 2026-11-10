@@ -1,7 +1,217 @@
 <!DOCTYPE html>
 <html lang="tk">
 <head>
+  <meta charset="UTF-8"><!DOCTYPE html>
+<html lang="tk">
+<head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maksat DICOM Workstation (v38 Pro)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo">M</div>
+      <div class="brand-info">
+        <span class="brand-title">Maksat DICOM Workstation (v38 Pro)</span>
+        <span class="brand-subtitle">DICOM & Goralan Lukmançylyk Portaly</span>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="#dicom" id="nav-dicom" class="nav-item active">DICOM</a>
+      <a href="#files" id="nav-files" class="nav-item">Faýllar</a>
+      <a href="#community" id="nav-community" class="nav-item">Jemgyýet</a>
+    </nav>
+    <div class="header-actions">
+      <button class="btn btn-primary" id="btn-open-import" onclick="location.hash='#importPanel'"><span class="icon">+</span> DICOM Ýükläň</button>
+      <div class="user-status-badge" id="user-status"><span class="status-dot online"></span><span id="user-label">Admin (Tassyklanan)</span></div>
+      <button class="btn btn-outline" id="btn-logout">Çyk</button>
+    </div>
+  </header>
+  <main class="main-container">
+    <section id="view-dicom" class="content-view active">
+      <div class="viewer-layout">
+        <div class="viewport-card">
+          <div class="viewport-toolbar">
+            <div class="tool-group">
+              <button class="tool-btn active" data-tool="windowLevel" title="W/L">W/L</button>
+              <button class="tool-btn" data-tool="pan" title="Pan">Süýşür</button>
+              <button class="tool-btn" data-tool="zoom" title="Zoom">Zoom</button>
+              <button class="tool-btn" data-tool="measure" title="Measure">Çyzgyç</button>
+              <button class="tool-btn" data-tool="invert" title="Invert">Invert</button>
+              <button class="tool-btn" data-tool="reset" title="Reset">Reset</button>
+            </div>
+            <div class="preset-group" style="display:inline-flex; gap:6px; margin-left:12px;">
+              <span style="font-size:12px; color:#8a99ad; font-weight:bold;">W/L Presets:</span>
+              <button class="tool-btn btn-preset" data-preset="brain">Brain</button>
+              <button class="tool-btn btn-preset" data-preset="lung">Lung</button>
+              <button class="tool-btn btn-preset" data-preset="bone">Bone</button>
+              <button class="tool-btn btn-preset" data-preset="soft-tissue">Soft Tissue</button>
+            </div>
+          </div>
+          <div class="viewport-meta-overlay" id="viewport-meta" style="padding:10px; display:flex; flex-direction:column; justify-content:space-between; height:100%; box-sizing:border-box;">
+            <div style="display:flex; justify-content:space-between; color:#00ffcc; font-family:monospace; font-size:12px;">
+              <div>Näsag: ANON_94821</div>
+              <div>Sene: 2026-11-10 (DICOM PS 3.14)</div>
+            </div>
+            <div style="display:flex; justify-content:space-between; color:#00ffcc; font-family:monospace; font-size:12px;">
+              <div>W/L: W:400 L:40</div>
+              <div>Zoom: 100% | Spacing: 0.75mm / 0.75mm</div>
+            </div>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="dicomCanvas" width="512" height="512"></canvas>
+            <div class="drop-hint" id="drop-hint">
+              <div class="hint-icon">📂</div>
+              <h3>DICOM faýlyny bu ýere süýräp taşlaň</h3>
+              <p>ýa-da ýokarky "DICOM Ýükläň" düwmesine basyň</p>
+            </div>
+          </div>
+        </div>
+        <aside class="sidebar-card">
+          <div class="sidebar-header">
+            <h3>DICOM Tag Maglumatlary</h3>
+            <span class="badge badge-success" id="anon-badge">Anonimleşdirilen</span>
+          </div>
+          <div class="metadata-table-container">
+            <table class="data-table" id="dicom-tags-table">
+              <thead><tr><th>Tag</th><th>Ady</th><th>Baha</th></tr></thead>
+              <tbody id="tags-tbody">
+                <tr><td>(0010,0010)</td><td>PatientName</td><td>ANONYMIZED</td></tr>
+                <tr><td>(0010,0020)</td><td>PatientID</td><td>MK-2026-904</td></tr>
+                <tr><td>(0008,0060)</td><td>Modality</td><td>CT</td></tr>
+                <tr><td>(0020,0032)</td><td>ImagePosition</td><td>-120.0 / -100.0 / 45.0</td></tr>
+                <tr><td>(0028,0030)</td><td>PixelSpacing</td><td>0.75mm / 0.75mm</td></tr>
+                <tr><td>(0028,1050)</td><td>WindowCenter</td><td>40</td></tr>
+                <tr><td>(0028,1051)</td><td>WindowWidth</td><td>400</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section id="view-files" class="content-view">
+      <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2>Faýllar Katalogy</h2>
+        <div>
+          <button class="btn btn-warning btn-sm" id="btn-purge-all">Safe Purge (Ygtybarly pozmak)</button>
+          <button class="btn btn-danger btn-sm" id="btn-trash-all">Sebet (Trash)</button>
+        </div>
+      </div>
+      <div class="table-card">
+        <table class="data-table" id="files-table">
+          <thead>
+            <tr>
+              <th>Faýl ady / Barlag</th>
+              <th>Tenant / Issuer</th>
+              <th>Möçberi</th>
+              <th>Anonimlik Statusy</th>
+              <th>Ýüklenen senesi</th>
+              <th>Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="files-list">
+            <tr>
+              <td><strong>CT Chest HighRes</strong></td>
+              <td>Tenant-Alpha / RAD-01</td>
+              <td>142 MB</td>
+              <td><span class="badge badge-success">Anonimleşdirilen</span></td>
+              <td>2026-11-02</td>
+              <td>
+                <button class="btn btn-sm btn-warning">Safe Purge</button>
+                <button class="btn btn-sm btn-danger">Trash</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>MR Brain T1</strong></td>
+              <td>Tenant-Beta / MRI-02</td>
+              <td>85 MB</td>
+              <td><span class="badge badge-success">Anonimleşdirilen</span></td>
+              <td>2026-11-05</td>
+              <td>
+                <button class="btn btn-sm btn-warning">Safe Purge</button>
+                <button class="btn btn-sm btn-danger">Trash</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>CR Thorax PA</strong></td>
+              <td>Tenant-Gamma / XRAY-01</td>
+              <td>18 MB</td>
+              <td><span class="badge badge-success">Anonimleşdirilen</span></td>
+              <td>2026-11-08</td>
+              <td>
+                <button class="btn btn-sm btn-warning">Safe Purge</button>
+                <button class="btn btn-sm btn-danger">Trash</button>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>CT Angio</strong></td>
+              <td>Tenant-Delta / CT-03</td>
+              <td>210 MB</td>
+              <td><span class="badge badge-success">Anonimleşdirilen</span></td>
+              <td>2026-11-09</td>
+              <td>
+                <button class="btn btn-sm btn-warning">Safe Purge</button>
+                <button class="btn btn-sm btn-danger">Trash</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section id="view-community" class="content-view">
+      <h2>Jemgyýet & Konsilium Meýdançasy</h2>
+      <p>Bütindünýä lukmanlary we radiologlary bilen anonimleşdirilen wakalary paýlaşyň we maslahatlaşyň.</p>
+    </section>
+  </main>
+  <div class="modal-overlay" id="importPanel">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>DICOM Faýlyny Ýüklemek we Analiz</h3>
+        <button class="modal-close" onclick="location.hash='#dicom'">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="file-input" accept=".dcm,.dicom,application/dicom" multiple style="display: none;">
+          <div class="upload-zone-content" onclick="document.getElementById('file-input').click()">
+            <div class="zone-icon">🚨</div>
+            <h4>Faýly saýlaň ýa-da şu ýere süýräň</h4>
+            <p>.dcm, .dicom lukmançylyk formatlary goldanýar</p>
+          </div>
+        </div>
+        <div class="security-options">
+          <label class="toggle-control">
+            <input type="checkbox" id="toggle-anonymize" checked>
+            <span class="control-label">
+              <strong>Awtomatik Anonimizasiýa (PHI Filter):</strong>
+              <small>Näsagyň şahsy maglumatlaryny (ady, ID-si, senesi) serwere iberilmezden öň brauzerde arassalaň</small>
+            </span>
+          </label>
+        </div>
+        <div class="modal-actions" style="margin-top:12px; display:flex; gap:8px;">
+          <button class="btn btn-warning btn-sm" id="btn-safe-purge">Safe Purge (Ygtybarly pozmak)</button>
+          <button class="btn btn-danger btn-sm" id="btn-trash">Sebet (Trash)</button>
+        </div>
+        <div class="upload-progress-container" id="progress-container" style="margin-top:12px;">
+          <div class="progress-info">
+            <span id="progress-text">Dowamly ýükleme progress belligi (Uploading...):</span>
+            <span id="progress-pct">100%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill" style="width: 100%;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="location.hash='#dicom'">Ýatyr</button>
+        <button class="btn btn-primary" id="btn-start-upload">Ýüklemegi Başlat</button>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Maksat DICOM Workstation (v38 Pro)</title>
   <link rel="stylesheet" href="style.css">
