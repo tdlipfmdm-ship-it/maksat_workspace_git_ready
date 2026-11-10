@@ -1,1 +1,66 @@
-<!DOCTYPE html><html lang="tk"><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=frontend/index.html"><title>Maksat Workspace</title><script>window.location.href = "frontend/index.html";</script></head><body><p>Redirecting to <a href="frontend/index.html">frontend/index.html</a>...</p></body></html>
+<!DOCTYPE html>
+<html lang="tk">
+<head>
+  <base href="frontend/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maksat DICOM Workstation (v38 Pro)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <header class="app-header">
+    <div class="logo-area">
+      <h1>Maksat DICOM Workstation <span class="version-badge">v38 Pro</span></h1>
+    </div>
+    <nav class="main-nav">
+      <a href="#dicom" class="nav-link active">DICOM Viewer</a>
+      <a href="#files" class="nav-link">File Explorer</a>
+      <a href="#community" class="nav-link">Community</a>
+    </nav>
+  </header>
+  <main class="main-container">
+    <section id="view-dicom" class="view-section active">
+      <div class="toolbar">
+        <button class="tool-btn" id="btn-zoom">Zoom</button>
+        <button class="tool-btn" id="btn-pan">Pan</button>
+        <button class="tool-btn" id="btn-contrast">Contrast</button>
+        <button class="tool-btn" id="btn-reset">Reset</button>
+      </div>
+      <div class="dicom-viewport">
+        <div class="viewport-overlay top-left">Patient: DEMO_PATIENT_01</div>
+        <div class="viewport-overlay top-right">Modality: CT</div>
+        <div class="viewport-overlay bottom-left">WW/WL: 350/40</div>
+        <div class="viewport-overlay bottom-right">Zoom: 100%</div>
+        <canvas id="dicomCanvas" width="512" height="512"></canvas>
+      </div>
+    </section>
+    <section id="view-files" class="view-section">
+      <div class="file-manager">
+        <h2>File Explorer</h2>
+        <div class="search-bar">
+          <input type="text" placeholder="Search files..." id="fileSearch">
+        </div>
+        <table class="file-table">
+          <thead>
+            <tr><th>Name</th><th>Size</th><th>Modality</th><th>Date</th></tr>
+          </thead>
+          <tbody id="fileList">
+            <tr><td>CT_HEAD_001.dcm</td><td>512 KB</td><td>CT</td><td>2026-11-10</td></tr>
+            <tr><td>MR_BRAIN_002.dcm</td><td>1024 KB</td><td>MR</td><td>2026-11-09</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section id="view-community" class="view-section">
+      <div class="community-feed">
+        <h2>Community Discussions</h2>
+        <div class="post-card">
+          <h3>DICOM v38 Feature Release</h3>
+          <p>Welcome to the latest DICOM workstation release with enhanced rendering performance.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html
