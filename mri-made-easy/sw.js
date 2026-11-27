@@ -1,8 +1,9 @@
-const CACHE_NAME = 'mri-made-easy-pwa-v1';
+const CACHE_NAME = 'mri-made-easy-pwa-v2';
 const BASE = self.registration.scope;
 const CORE_FILES = [
   './',
   './index.html',
+  './embedded-media.js',
   './manifest.webmanifest',
   './icons/mri-icon-192.svg',
   './icons/mri-icon-512.svg'
