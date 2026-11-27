@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b1220">
+<meta name="theme-color" content="#09101d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/mri-icon-192.svg" sizes="192x192" type="image/svg+xml">
 <title>MRI Made Easy — MRT okuw studiýasy</title>
 <meta name="description" content="Magnit-rezonans tomografiýasynyň esaslaryny türkmen dilinde öwrenmek üçin wideo sapaklary, interaktiw animasiýalar we okuw materiallary.">
 <script>
@@ -89,11 +94,6 @@ button:disabled{opacity:.42;cursor:not-allowed}
 .view.active{display:block}
 
 /* Banner */
-.dropBanner{margin-bottom:16px;border:1px dashed #37627d;background:linear-gradient(110deg,rgba(19,53,75,.48),rgba(16,26,43,.85));border-radius:15px;padding:13px 17px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.dropBannerInfo{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
-.dropBannerInfo > div > b{font-size:13px;display:block}
-.dropBannerInfo small{font-size:11.5px;color:var(--muted);display:block;margin-top:3px;line-height:1.5}
-.dropActions{display:flex;gap:8px;flex-wrap:wrap}
 
 /* VIDEO / DESKTOP PLAYER WORKSPACE */
 .playerLayout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
@@ -114,7 +114,6 @@ button:disabled{opacity:.42;cursor:not-allowed}
 .modeBtn:hover:not(.active){color:var(--text)}
 
 .stageViewport{position:relative;width:100%;aspect-ratio:4/3;background:#040811;display:grid;place-items:center;overflow:hidden}
-.stageViewport.dragover{outline:3px dashed var(--teal);outline-offset:-10px;background:#08202c}
 .playerNotice{position:absolute;z-index:7;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92%,520px);border:1px solid rgba(255,198,109,.55);background:rgba(8,15,27,.96);border-radius:15px;padding:18px;box-shadow:0 16px 50px #0009;text-align:center}
 .playerNotice[hidden]{display:none!important}.playerNotice h3{margin:0 0 8px;color:var(--amber);font-size:15px}.playerNotice p{margin:0 0 12px;color:#c0cee0;font-size:12px;line-height:1.55}.playerNoticeActions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
 #ruffleMount,#html5VideoMount,#simCanvasWrap{position:absolute;inset:0;width:100%;height:100%;display:none}
@@ -373,13 +372,11 @@ button:disabled{opacity:.42;cursor:not-allowed}
         <div class="crumb">MRI Made Easy <span style="color:#536882">/</span> <strong id="crumb">Wideo sapaklar (52)</strong></div>
       </div>
       <div class="topActions">
+        <button class="quietBtn" id="installAppBtn" type="button" title="PWA gurnamak">⬇ PWA gurnat</button>
         <select class="ctrlSelect languagePicker" id="languageSelect" aria-label="Dil saýla"><option value="tk">Türkmençe</option><option value="ru">Русский</option><option value="en">English</option></select>
       </div>
     </header>
 
-    <input type="file" id="folderInput" class="hiddenInput" webkitdirectory directory multiple>
-    <input type="file" id="fileInput" class="hiddenInput" multiple accept=".swf,.mp4,.webm,.ogg,.mov,.m4v">
-    <input type="file" id="zipInput" class="hiddenInput" accept=".zip,application/zip">
     <input type="file" id="bmImportInput" class="hiddenInput" accept=".json">
     <input type="file" id="subImportInput" class="hiddenInput" accept=".srt,.vtt">
 
@@ -387,21 +384,6 @@ button:disabled{opacity:.42;cursor:not-allowed}
 
       <!-- VIEW: UNIFIED DESKTOP VIDEO / SWF / INTERACTIVE PLAYER -->
       <section class="view active" id="view-player">
-        <div class="dropBanner" id="dropBanner">
-          <div class="dropBannerInfo">
-            <span style="font-size:24px">🎬</span>
-            <div>
-              <b>MRT okuw wideolary we interaktiw sapaklar</b>
-              <small>Wideony sanawdan saýlaň ýa-da öz okuw arhiwiňizi goşuň. SWF wideolary üçin internet birikmesi zerur bolup biler.</small>
-            </div>
-          </div>
-          <div class="dropActions">
-            <button class="primary sm" id="btnSelectZip">📦 Arhiwden aç</button>
-            <button class="quietBtn" id="btnSelectFolder">📁 Papkadan aç</button>
-            <button class="quietBtn" id="btnSelectFiles">+ Wideo goş</button>
-          </div>
-        </div>
-
         <div class="playerLayout">
           <div class="stageCard">
             <div class="stageTop">
@@ -672,8 +654,8 @@ button:disabled{opacity:.42;cursor:not-allowed}
             <li>Wideony oýnatmak, säginmek, öňki ýa-da indiki bölüme geçmek üçin pleýeriň dolandyryş düwmelerini ulanyň.</li>
             <li>Düşündiriş ýazgylaryny açyp-ýapyp, wideony doly ekran görnüşinde görüp bilersiňiz.</li>
           </ul>
-          <h2>Öz okuw faýlyňyzy goşmak</h2>
-          <p>«Arhiwden aç», «Papkadan aç» ýa-da «Wideo goş» düwmeleriniň birini saýlaň. SWF görnüşindäki köne faýllary görkezmek üçin pleýeriň ýüklenmegi we internet birikmesi zerur bolup biler. MP4 wideolar häzirki zaman pleýerde açylýar.</p>
+          <h2>Android we Windows-da gurnamak</h2>
+          <p>Android telefonynda Chrome menýusyndan «Install app» ýa-da «Baş ekrana goş» saýlaň. Windows-da Chrome ýa-da Edge menýusyndan «Install app» saýlap, studiýany programma hökmünde gurnap bilersiňiz.</p>
           <h2>Okuwyňyzy dowam etdirmek</h2>
           <p>«Okuw bölümleri» sapaklary öwrenmäge, «MRT sözlügi» esasy düşünjeleri gözlemäge, «Belliklerim» bolsa soň gaýdyp görmek isleýän materiallaryňyzy saklamaga kömek edýär.</p>
           <p><b>Bellik:</b> materiallar okuw maksatlydyr. Kliniki diagnoz goýmak ýa-da bejergi bellemek üçin ulanylmaýar.</p>
@@ -886,8 +868,6 @@ function persist() {
   refreshStats();
 }
 
-const localMedia = new Map();
-const extraVideos = [];
 let activeVideoId = 'Sektion_1';
 let videoHistory = [];
 let playlistFilter = 'all';
@@ -921,12 +901,9 @@ function b64ToUint8Array(b64) {
   for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
   return arr;
 }
-function normalizeKey(fn) { return fn.split(/[\\/]/).pop().replace(/\.[^.]+$/, '').toLowerCase(); }
-function allVideos() { return VIDEO_CATALOG.concat(extraVideos); }
+function allVideos() { return VIDEO_CATALOG; }
 function getVideoItem(id) { return allVideos().find(v => v.id === id) || VIDEO_CATALOG[0]; }
 function getMediaSource(id) {
-  const key = id.toLowerCase();
-  if (localMedia.has(key)) return localMedia.get(key);
   if (EMBEDDED_SWF_B64[id]) return {type:'swf', embedded:true, b64:EMBEDDED_SWF_B64[id], name:id + '.swf'};
   return null;
 }
@@ -1117,7 +1094,7 @@ async function loadVideo(id, opts = {}) {
       mount.appendChild(player);
       ruffleInstance = player;
       ruffleApi = api;
-      const bytes = src.embedded ? b64ToUint8Array(src.b64) : new Uint8Array(await src.file.arrayBuffer());
+      const bytes = b64ToUint8Array(src.b64);
       await api.load({data: bytes});
       if (seq !== playbackSequence) return;
       applyVolume();
@@ -1128,7 +1105,7 @@ async function loadVideo(id, opts = {}) {
       ruffleInstance = null;
       ruffleApi = null;
       startTopicAnimation(item, opts);
-      showPlayerNotice('SWF açylmady', 'Ruffle faýly ýükläp bilmedi. ZIP arhiwini doly açyp, movies/ bukjasyny saýlaň ýa-da Interaktiw animasiýa režimini ulanyň.', true);
+      showPlayerNotice('SWF açylmady', 'Ruffle faýly ýükläp bilmedi. Internet birikmesini barlaň ýa-da Interaktiw animasiýa režimini ulanyň.', true);
       return;
     }
   }
@@ -1138,7 +1115,7 @@ async function loadVideo(id, opts = {}) {
   if (src && src.type === 'swf' && preferredMode !== 'sim' && !ruffleReady) {
     showPlayerNotice('SWF pleýeri elýeterli däl', 'SWF görkezmek üçin internetden Ruffle pleýeri ýüklenmeli. Interneti barlaň ýa-da MP4/Interaktiw animasiýa ulanyň.', true);
   } else if (!src && preferredMode === 'swf') {
-    showPlayerNotice('Original media faýly goşulmady', 'Arhiwi ZIP-den import ediň ýa-da arhiwden çykarylan movies/ bukjasyny saýlaň.', false);
+    showPlayerNotice('Original media elýeterli däl', 'Bu sapak üçin içerki media ýok. Interaktiw animasiýa režimini ulanyň.', false);
   }
 }
 
@@ -1577,93 +1554,8 @@ document.querySelectorAll('#labPresets .tabChip').forEach(btn => {
 });
 ['slTR', 'slTE', 'slTI', 'chkGd'].forEach(id => document.getElementById(id).addEventListener('input', renderBrainLab));
 
-// === OFFLINE-FRIENDLY ZIP IMPORT (extract only movies/ media) ===
-async function importMoviesZip(file) {
-  const toastEl = document.getElementById('toast');
-  toast('ZIP arhiwi barlanýar...');
-  try {
-    const tailLength = Math.min(file.size, 22 + 0xFFFF);
-    const tail = new DataView(await file.slice(file.size - tailLength).arrayBuffer());
-    let eocd = -1;
-    for (let i = tail.byteLength - 22; i >= 0; i--) {
-      if (tail.getUint32(i, true) === 0x06054b50 && i + 22 + tail.getUint16(i + 20, true) === tail.byteLength) { eocd = i; break; }
-    }
-    if (eocd < 0) throw new Error('ZIP gutaryş belligi tapylmady.');
-    const disk = tail.getUint16(eocd + 4, true), centralDisk = tail.getUint16(eocd + 6, true);
-    const entryCount = tail.getUint16(eocd + 10, true);
-    const centralSize = tail.getUint32(eocd + 12, true), centralOffset = tail.getUint32(eocd + 16, true);
-    if (disk !== 0 || centralDisk !== 0 || entryCount === 0xFFFF || centralOffset === 0xFFFFFFFF) throw new Error('Köp diskli ýa-da ZIP64 arhiwi goldanylmaýar.');
-    if (centralSize > 32 * 1024 * 1024 || centralOffset + centralSize > file.size) throw new Error('ZIP indeksiniň ölçegi nädogry.');
-    const directory = new DataView(await file.slice(centralOffset, centralOffset + centralSize).arrayBuffer());
-    const decoder = new TextDecoder('utf-8');
-    const media = []; let p = 0, extractedBytes = 0;
-    for (let i = 0; i < entryCount; i++) {
-      if (p + 46 > directory.byteLength || directory.getUint32(p, true) !== 0x02014b50) throw new Error('ZIP faýl sanawy nädogry.');
-      const flags = directory.getUint16(p + 8, true), method = directory.getUint16(p + 10, true);
-      const compressedSize = directory.getUint32(p + 20, true), expandedSize = directory.getUint32(p + 24, true);
-      const nameLen = directory.getUint16(p + 28, true), extraLen = directory.getUint16(p + 30, true), commentLen = directory.getUint16(p + 32, true);
-      const localOffset = directory.getUint32(p + 42, true);
-      const name = decoder.decode(new Uint8Array(directory.buffer, directory.byteOffset + p + 46, nameLen));
-      p += 46 + nameLen + extraLen + commentLen;
-      const normalized = name.replace(/\\/g, '/');
-      const leaf = normalized.split('/').pop();
-      const ext = (leaf.split('.').pop() || '').toLowerCase();
-      if (!/(^|\/)movies\//i.test(normalized) || !['swf','mp4','webm','ogg','mov','m4v'].includes(ext) || !leaf) continue;
-      if ((flags & 1) || ![0,8].includes(method)) continue;
-      if (expandedSize > 64 * 1024 * 1024 || extractedBytes + expandedSize > 256 * 1024 * 1024) throw new Error('Media faýllary rugsat berlen ölçegden uly.');
-      const localHead = new DataView(await file.slice(localOffset, localOffset + 30).arrayBuffer());
-      if (localHead.byteLength < 30 || localHead.getUint32(0, true) !== 0x04034b50) throw new Error('ZIP içindäki media faýlynyň ýazgysy nädogry.');
-      const start = localOffset + 30 + localHead.getUint16(26, true) + localHead.getUint16(28, true);
-      const compressed = await file.slice(start, start + compressedSize).arrayBuffer();
-      let data;
-      if (method === 0) data = compressed;
-      else {
-        if (typeof DecompressionStream === 'undefined') throw new Error('Bu brauzer ZIP-den çykarmagy goldamaýar. Arhiwi Windows-da çykaryp, movies/ bukjasyny saýlaň.');
-        data = await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer();
-      }
-      if (data.byteLength !== expandedSize) throw new Error('ZIP-den çykarylan faýlyň ölçegi gabat gelmedi: ' + leaf);
-      media.push(new File([data], leaf, {type: ext === 'swf' ? 'application/x-shockwave-flash' : ''}));
-      extractedBytes += data.byteLength;
-    }
-    if (!media.length) throw new Error('ZIP-de movies/ bukjasynda goldanylýan SWF/MP4 faýly tapylmady.');
-    handleLoadedFiles(media);
-    toast(media.length + ' media faýly ZIP-den ýüklendi ✓');
-  } catch (err) {
-    console.error('ZIP import failed:', err);
-    toast(err && err.message ? err.message : 'ZIP arhiwi açylmady');
-  }
-}
-
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>\"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[ch]));
-}
-
-// === LOCAL FILE LOADER ===
-function handleLoadedFiles(fileList) {
-  let added = 0, firstId = null;
-  for (const file of fileList) {
-    const ext = (file.name.split('.').pop() || '').toLowerCase();
-    if (!['swf', 'mp4', 'webm', 'ogg', 'mov', 'm4v'].includes(ext)) continue;
-    const key = normalizeKey(file.name);
-    const type = ext === 'swf' ? 'swf' : 'video';
-    const url = type === 'video' ? URL.createObjectURL(file) : '';
-    const previous = localMedia.get(key);
-    if (previous && previous.url) URL.revokeObjectURL(previous.url);
-    localMedia.set(key, {type, file, url, name:file.name, embedded:false});
-    added++;
-    const match = VIDEO_CATALOG.find(v => v.id.toLowerCase() === key);
-    if (match) { if (!firstId) firstId = match.id; }
-    else if (!extraVideos.find(v => v.id.toLowerCase() === key)) {
-      const cid = file.name.replace(/\.[^.]+$/, '');
-      extraVideos.push({id:cid, title:cid + ' (' + ext.toUpperCase() + ')', desc:'Ýüklenen faýl: ' + file.name, narration:file.name, simType:'relax', category:'extra', embedded:false, size:file.size, moduleIndex:0});
-      if (!firstId) firstId = cid;
-    }
-  }
-  if (!added) { toast('movies/ bukjasynda SWF ýa-da MP4/WebM tapylmady'); return; }
-  updateReadyCounts();
-  renderPlaylist();
-  toast(added + ' sany media faýly üstünlikli ýüklendi!');
-  if (firstId) loadVideo(firstId);
 }
 
 function updateReadyCounts() {
@@ -1674,7 +1566,7 @@ function updateReadyCounts() {
   document.getElementById('sideReadyCount').textContent = loaded.length + '/' + total;
   document.getElementById('playlistCountBadge').textContent = swfCount + ' SWF · ' + videoCount + ' wideo';
   document.getElementById('statVideos').textContent = total;
-  document.getElementById('sideFolderInfo').textContent = 'Ýüklenen media: ' + loaded.length + '/' + total + ' (' + swfCount + ' SWF, ' + videoCount + ' MP4/WebM). ZIP arhiwini ýa-da movies/ bukjasyny goşuň.';
+  document.getElementById('sideFolderInfo').textContent = 'Elýeterli media: ' + loaded.length + '/' + total + ' (' + swfCount + ' SWF, ' + videoCount + ' wideo).';
 }
 
 // === PLAYLIST, INDEX, COURSES, LESSONS, BOOKMARKS ===
@@ -1885,17 +1777,11 @@ document.querySelectorAll('#modeSwitch .modeBtn').forEach(btn => btn.addEventLis
   btn.classList.add('active');
   preferredMode = btn.dataset.mode;
   if (preferredMode === 'swf' && !getMediaSource(activeVideoId)) {
-    toast('Bu bölüm üçin movies/ bukjasyny saýlaň (häzirlikçe Interaktiw animasiýa işleýär)');
+    toast('Bu bölüm üçin original media ýok. Interaktiw animasiýa režimini saýlaň.');
   }
   loadVideo(activeVideoId, {pushHistory: false});
 }));
 
-// File pickers & drag-drop
-const pickFolder = () => document.getElementById('folderInput').click();
-const pickFiles = () => document.getElementById('fileInput').click();
-const pickZip = () => document.getElementById('zipInput').click();
-document.getElementById('btnSelectZip').addEventListener('click', pickZip);
-document.getElementById('zipInput').addEventListener('change', e => { const f=e.target.files[0]; if(f) importMoviesZip(f); e.target.value=''; });
 document.getElementById('btnRetryRuffle').addEventListener('click', () => {
   if (window.RufflePlayer && typeof window.RufflePlayer.newest === 'function') { checkRuffle(0); loadVideo(activeVideoId, {pushHistory:false}); return; }
   ruffleReady = false; window.__ruffleLoadState = 'loading'; setRuffleStatus('loading','Pleýer gaýtadan ýüklenýär...');
@@ -1906,19 +1792,6 @@ document.getElementById('btnRetryRuffle').addEventListener('click', () => {
   document.head.appendChild(script);
 });
 document.getElementById('btnNoticeSim').addEventListener('click', () => { preferredMode='sim'; document.querySelectorAll('#modeSwitch .modeBtn').forEach(x => x.classList.toggle('active', x.dataset.mode==='sim')); loadVideo(activeVideoId,{pushHistory:false}); });
-document.getElementById('btnSelectFolder').addEventListener('click', pickFolder);
-document.getElementById('btnSelectFiles').addEventListener('click', pickFiles);
-document.getElementById('folderInput').addEventListener('change', e => { handleLoadedFiles(e.target.files); e.target.value = ''; });
-document.getElementById('fileInput').addEventListener('change', e => { handleLoadedFiles(e.target.files); e.target.value = ''; });
-['stageViewport', 'dropBanner'].forEach(id => {
-  const el = document.getElementById(id);
-  el.addEventListener('dragover', e => { e.preventDefault(); document.getElementById('stageViewport').classList.add('dragover'); });
-  el.addEventListener('dragleave', () => document.getElementById('stageViewport').classList.remove('dragover'));
-  el.addEventListener('drop', e => {
-    e.preventDefault(); document.getElementById('stageViewport').classList.remove('dragover');
-    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) handleLoadedFiles(e.dataTransfer.files);
-  });
-});
 
 // Transport controls
 const vidEl = document.getElementById('html5Video');
@@ -2115,9 +1988,7 @@ const UI_I18N = {
     'Esasy menýu':'Main menu','Gollanmalar':'Study resources','Wideo pleýer (52)':'Video lessons (52)',
     'MRT kontrast simulýatory':'MRI contrast simulator','Okuw bölümleri':'Study modules','MRT sözlügi':'MRI glossary','Sözlük termini':'Glossary terms','Belliklerim':'Bookmarks','Öwreniş ösüşi':'Learning progress',
     'Baş sahypa':'Home','Ulanyş gollanmasy':'User guide',
-    'Pleýer taýýarlanýar...':'Preparing player…',
-    'MRT okuw wideolary we interaktiw sapaklar':'MRI video lessons and interactive learning',
-    '📦 Arhiwden aç':'📦 Open archive','📁 Papkadan aç':'📁 Open folder','+ Wideo goş':'+ Add video',
+    'Pleýer taýýarlanýar...':'Preparing player…','⬇ PWA gurnat':'⬇ Install PWA',
     'Awtomatiki':'Automatic','Interaktiw animasiýa':'Interactive animation','♡ Bellik':'♡ Bookmark',
     'CC Subtitr':'CC Captions','📝 Transkript':'📝 Transcript','Öňki':'Previous','⏸ Pauza':'⏸ Pause',
     '↺ Gaýtadan':'↺ Restart','Indiki ⏭':'Next ⏭','Sapaklaryň sanawy':'Lesson list','Ählisi (52)':'All (52)',
@@ -2127,7 +1998,7 @@ const UI_I18N = {
     'Okuw bölümleri (32 sapak)':'Study modules (32 lessons)','Okuw kitaphanasy':'Course library',
     'Terminologiýa':'Terminology','Gysgaça gollanma':'Quick guide',
     'Okuw studiýasyny ulanmak':'Using the learning studio','Wideo sapagyny görmek':'Watching a video lesson',
-    'Öz okuw faýlyňyzy goşmak':'Adding your learning files','Dowam et':'Continue',
+    'Dowam et':'Continue',
     'Soňky açan sapagyňyz':'Your last lesson','Sapaga geç →':'Open lesson →',
     'Ösüşiňiz':'Your progress','Okuw meýilnamasy':'Study plan','Bellik:':'Note:',
     'Okuw maksatly material. Kliniki diagnoz goýmak ýa-da bejergi bellemek üçin ulanylmaýar.':'For educational use only. Not for clinical diagnosis or treatment decisions.',
@@ -2138,9 +2009,7 @@ const UI_I18N = {
     'Esasy menýu':'Главное меню','Gollanmalar':'Учебные материалы','Wideo pleýer (52)':'Видеоуроки (52)',
     'MRT kontrast simulýatory':'Симулятор контрастности МРТ','Okuw bölümleri':'Учебные разделы','MRT sözlügi':'Словарь МРТ','Sözlük termini':'Термины словаря','Belliklerim':'Закладки','Öwreniş ösüşi':'Прогресс обучения',
     'Baş sahypa':'Главная','Ulanyş gollanmasy':'Руководство',
-    'Pleýer taýýarlanýar...':'Загрузка проигрывателя…',
-    'MRT okuw wideolary we interaktiw sapaklar':'Видеоуроки и интерактивное обучение МРТ',
-    '📦 Arhiwden aç':'📦 Открыть архив','📁 Papkadan aç':'📁 Открыть папку','+ Wideo goş':'+ Добавить видео',
+    'Pleýer taýýarlanýar...':'Загрузка проигрывателя…','⬇ PWA gurnat':'⬇ Установить PWA',
     'Awtomatiki':'Автоматически','Interaktiw animasiýa':'Интерактивная анимация','♡ Bellik':'♡ В закладки',
     'CC Subtitr':'CC Субтитры','📝 Transkript':'📝 Текст','Öňki':'Назад','⏸ Pauza':'⏸ Пауза',
     '↺ Gaýtadan':'↺ Сначала','Indiki ⏭':'Далее ⏭','Sapaklaryň sanawy':'Список уроков','Ählisi (52)':'Все (52)',
@@ -2150,7 +2019,7 @@ const UI_I18N = {
     'Okuw bölümleri (32 sapak)':'Учебные разделы (32 урока)','Okuw kitaphanasy':'Библиотека курсов',
     'Terminologiýa':'Терминология','Gysgaça gollanma':'Краткое руководство',
     'Okuw studiýasyny ulanmak':'Как пользоваться учебной студией','Wideo sapagyny görmek':'Просмотр видеоурока',
-    'Öz okuw faýlyňyzy goşmak':'Добавление учебных файлов','Dowam et':'Продолжить',
+    'Dowam et':'Продолжить',
     'Soňky açan sapagyňyz':'Последний открытый урок','Sapaga geç →':'К уроку →',
     'Ösüşiňiz':'Ваш прогресс','Okuw meýilnamasy':'План обучения','Bellik:':'Примечание:',
     'Okuw maksatly material. Kliniki diagnoz goýmak ýa-da bejergi bellemek üçin ulanylmaýar.':'Материал предназначен для обучения. Не использовать для постановки диагноза или назначения лечения.',
@@ -2264,6 +2133,34 @@ const languageObserver=new MutationObserver(records=>{
 });
 languageObserver.observe(document.body,{childList:true,subtree:true});
 applyLanguage(languageSelect?.value||'tk');
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+});
+window.addEventListener('appinstalled', () => toast('MRI okuw studiýasy gurnaldy.'));
+document.getElementById('installAppBtn').addEventListener('click', async () => {
+  if (deferredInstallPrompt) {
+    const promptEvent = deferredInstallPrompt;
+    deferredInstallPrompt = null;
+    await promptEvent.prompt();
+    const result = await promptEvent.userChoice;
+    toast(result.outcome === 'accepted' ? 'MRI okuw studiýasy gurnaldy.' : 'Gurnatma ýatyryldy.');
+    return;
+  }
+  if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+    toast('MRI okuw studiýasy eýýäm gurnalan.');
+    return;
+  }
+  toast('Gurnamak üçin Chrome ýa-da Edge menýusyndan “Install app” saýlaň.');
+});
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js', {scope: './'}).catch(() => {});
+  });
+}
+
 
 checkRuffle(0);
 loadVideo('Sektion_1', {pushHistory: false});
