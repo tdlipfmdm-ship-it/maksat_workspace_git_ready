@@ -2151,7 +2151,7 @@ function applyLanguage(lang, root=document.body) {
   for(const el of root.querySelectorAll('[placeholder],[aria-label],[title]')) {
     for(const attr of ['placeholder','aria-label','title']) {
       if(!el.hasAttribute(attr)) continue;
-      const key='tk'+attr[0].toUpperCase()+attr.slice(1);
+      const key='tk'+attr.split('-').map(part=>part[0].toUpperCase()+part.slice(1)).join('');
       el.dataset[key] ||= el.getAttribute(attr);
       const original=el.dataset[key];
       el.setAttribute(attr,lang==='tk'?original:(dict[original]||original));
