@@ -22,3 +22,10 @@ The app is served from `mri-made-easy/` so it does not replace the repository's 
 `/maksat_workspace_git_ready/mri-made-easy/`
 
 The player no longer imports local ZIP, folder, or video files.
+
+## Viewing progress
+
+A section is counted only after you mark it as reviewed using the button
+in the player. You can click again to undo the mark. The course resumes
+the last section on that browser. The previous automatic open history is
+retained in storage but does not count as manually reviewed progress.

@@ -327,7 +327,7 @@ button:disabled{opacity:.42;cursor:not-allowed}
       <div class="navTitle">Esasy menýu</div>
       <button class="active" data-view="player">
         <span class="navLeft"><span class="ico">▶</span>Wideo sapaklar (52)</span>
-        <span class="pill" id="sideReadyCount">52/52</span>
+        <span class="pill" id="sideReadyCount">—</span>
       </button>
       <button data-view="lab">
         <span class="navLeft"><span class="ico">⚡</span>MRT kontrast simulýatory</span>
@@ -397,9 +397,10 @@ button:disabled{opacity:.42;cursor:not-allowed}
               <div class="ctrlGroup">
                 <div class="modeSwitch" id="modeSwitch">
                   <button class="modeBtn active" data-mode="auto">Awtomatiki</button>
-                  <button class="modeBtn" data-mode="swf">SWF / MP4</button>
+                  <button class="modeBtn" data-mode="swf">Asyl nusga</button>
                   <button class="modeBtn" data-mode="sim">Interaktiw animasiýa</button>
                 </div>
+                <button class="ctrlBtn" id="btnMarkReviewed" type="button" aria-pressed="false">Görüldi diýip belle</button>
                 <button class="ctrlBtn" id="btnBookmarkVideo" title="Bu bölümi bellige goş">♡ Bellik</button>
                 <button class="ctrlBtn active" id="btnToggleNotes" title="Türkmençe subtitrleri aç/ýap">CC Subtitr</button>
                 <button class="ctrlBtn" id="btnSubSize" title="Subtitr şrift ölçegi">Aa</button>
@@ -475,11 +476,11 @@ button:disabled{opacity:.42;cursor:not-allowed}
             <div class="playlistHead">
               <h3>
                 <span>Sapaklaryň sanawy</span>
-                <span class="pill" id="playlistCountBadge">52</span>
+                <span class="pill" id="playlistCountBadge">—</span>
               </h3>
               <div class="playlistTabs" id="playlistTabs">
                 <button class="tabChip active" data-filter="all">Ählisi (52)</button>
-                <button class="tabChip" data-filter="swf">SWF/MP4</button>
+                <button class="tabChip" data-filter="swf">Asyl nusgalar</button>
                 <button class="tabChip" data-filter="section">Bölümler</button>
                 <button class="tabChip" data-filter="summary">Jemleme</button>
               </div>
@@ -624,7 +625,7 @@ button:disabled{opacity:.42;cursor:not-allowed}
         <div class="sectionHead" style="margin-top:6px"><div><h2>Ösüşiňiz</h2><p>Öwrenilen sapaklaryň, wideolaryň we synaglaryň jemleýji ýagdaýy.</p></div></div>
         <div class="stats">
           <div class="stat"><div class="statIcon">✓</div><div><strong id="progressDone">0</strong><span>Tamamlanan sapak</span></div></div>
-          <div class="stat"><div class="statIcon">▶</div><div><strong id="progressWatched">0</strong><span>Görülen bölüm</span></div></div>
+          <div class="stat"><div class="statIcon">▶</div><div><strong id="progressWatched">0</strong><span>Görüldi diýip bellenen bölümler</span></div></div>
           <div class="stat"><div class="statIcon">◎</div><div><strong id="progressQuiz">0%</strong><span>Synag ortaça netijesi</span></div></div>
           <div class="stat"><div class="statIcon">♡</div><div><strong id="progressSaved">0</strong><span>Jemi bellik</span></div></div>
         </div>
@@ -906,13 +907,15 @@ function loadState() {
         saved: Array.isArray(p.saved) ? p.saved : [],
         videoBookmarks: Array.isArray(p.videoBookmarks) ? p.videoBookmarks : [],
         watchedVideos: Array.isArray(p.watchedVideos) ? p.watchedVideos : [],
+        reviewedVideos: Array.isArray(p.reviewedVideos)
+          ? [...new Set(p.reviewedVideos.filter(id => allVideos().some(v => v.id === id)))] : [],
         quiz: p.quiz && typeof p.quiz === 'object' ? p.quiz : {},
         lastLesson: typeof p.lastLesson === 'number' ? p.lastLesson : 0,
         lastVideo: typeof p.lastVideo === 'string' ? p.lastVideo : 'Sektion_1'
       };
     }
   } catch (e) {}
-  return {done:[], saved:[], videoBookmarks:[], watchedVideos:[], quiz:{}, lastLesson:0, lastVideo:'Sektion_1'};
+  return {done:[], saved:[], videoBookmarks:[], watchedVideos:[], reviewedVideos:[], quiz:{}, lastLesson:0, lastVideo:'Sektion_1'};
 }
 let state = loadState();
 function persist() {
@@ -1022,8 +1025,7 @@ function hidePlayerNotice() { document.getElementById('playerNotice').hidden = t
 function checkRuffle(attempt = 0) {
   if (window.RufflePlayer && typeof window.RufflePlayer.newest === 'function') {
     ruffleReady = true;
-    setRuffleStatus('ready', 'SWF wideolar taýýar');
-    document.getElementById('sideFolderInfo').textContent = 'SWF faýllaryny ZIP arhiwinden ýa-da movies/ bukjasyndan goşup bilersiňiz.';
+    setRuffleStatus('ready', 'SWF pleýeri taýýar');
     const src = getMediaSource(activeVideoId);
     if (src && src.type === 'swf' && preferredMode !== 'sim' && currentMode !== 'ruffle') {
       loadVideo(activeVideoId, {pushHistory: false});
@@ -1033,7 +1035,6 @@ function checkRuffle(attempt = 0) {
   if (window.__ruffleLoadState === 'failed') {
     ruffleReady = false;
     setRuffleStatus('error', 'SWF wideolary ýüklenmedi');
-    document.getElementById('sideFolderInfo').textContent = 'SWF açmak üçin internet we Ruffle zerur. MP4 ýa-da Interaktiw animasiýa offline işleýär.';
     return;
   }
   if (attempt < 80) {
@@ -1041,7 +1042,6 @@ function checkRuffle(attempt = 0) {
   } else {
     ruffleReady = false;
     setRuffleStatus('error', 'SWF pleýeri elýeterli däl');
-    document.getElementById('sideFolderInfo').textContent = 'SWF açmak üçin Ruffle gerek. Interneti barlaň; MP4 we Interaktiw animasiýa elýeterli.';
   }
 }
 
@@ -1067,7 +1067,6 @@ async function loadVideo(id, opts = {}) {
   }
   activeVideoId = item.id;
   state.lastVideo = item.id;
-  if (!state.watchedVideos.includes(item.id)) state.watchedVideos.push(item.id);
   persist();
 
   document.getElementById('stageTitle').textContent = item.title;
@@ -1075,6 +1074,7 @@ async function loadVideo(id, opts = {}) {
   renderTranscriptList(item.id, 20);
   syncSubtitleAt(0, 20);
   updateBookmarkButton();
+  updateReviewedButton();
   renderPlaylist();
 
   const src = getMediaSource(item.id);
@@ -1130,7 +1130,7 @@ async function loadVideo(id, opts = {}) {
   if (useMedia && src.type === 'swf' && ruffleReady) {
     currentMode = 'ruffle';
     badge.className = 'badge swf';
-    badge.textContent = src.embedded ? 'SWF · Original (MRISRING)' : 'SWF · Ýerli bukja';
+    badge.textContent = 'SWF · Asyl animasiýa';
     sub.textContent = src.name + ' · Ruffle WebAssembly Flash Pleýer' + (opts.targetFrame ? ' · Kadr #' + opts.targetFrame : '');
     modeInd.className = 'badge swf';
     modeInd.textContent = 'SWF / Flash';
@@ -1154,10 +1154,11 @@ async function loadVideo(id, opts = {}) {
       startSwfSubtitleClock();
       return;
     } catch (e) {
+      if (seq !== playbackSequence) return;
       ruffleInstance = null;
       ruffleApi = null;
       startTopicAnimation(item, opts);
-      showPlayerNotice('SWF açylmady', 'Ruffle faýly ýükläp bilmedi. Internet birikmesini barlaň ýa-da Interaktiw animasiýa režimini ulanyň.', true);
+      showPlayerNotice('SWF açylmady', 'Asyl animasiýa açylmady. Häzir interaktiw animasiýa görkezilýär.', true);
       return;
     }
   }
@@ -1165,9 +1166,9 @@ async function loadVideo(id, opts = {}) {
   // Otherwise play rich topic-specific HD Interactive Physics Animation!
   startTopicAnimation(item, opts);
   if (src && src.type === 'swf' && preferredMode !== 'sim' && !ruffleReady) {
-    showPlayerNotice('SWF pleýeri elýeterli däl', 'SWF görkezmek üçin internetden Ruffle pleýeri ýüklenmeli. Interneti barlaň ýa-da MP4/Interaktiw animasiýa ulanyň.', true);
+    showPlayerNotice('SWF pleýeri elýeterli däl', 'Asyl SWF animasiýasy üçin internet gerek. Häzir interaktiw animasiýa görkezilýär.', true);
   } else if (!src && preferredMode === 'swf') {
-    showPlayerNotice('Original media elýeterli däl', 'Bu sapak üçin içerki media ýok. Interaktiw animasiýa režimini ulanyň.', false);
+    showPlayerNotice('Original media elýeterli däl', 'Bu bölümde asyl nusga ýok. Häzir interaktiw animasiýa görkezilýär.', false);
   }
 }
 
@@ -1178,11 +1179,11 @@ function startTopicAnimation(item, opts = {}) {
   simPlaying = true;
   simTime = opts.targetFrame ? Math.min(18, (opts.targetFrame / 25) % 20) : 0;
 
-  const hasSwf = !!getMediaSource(item.id);
+  const hasOriginal = !!getMediaSource(item.id);
   const badge = document.getElementById('stageFormatBadge');
   badge.className = 'badge sim';
   badge.textContent = 'HD Interaktiw Animasiýa';
-  document.getElementById('stageSub').textContent = item.id + (hasSwf ? ' · Interaktiw animasiýa (SWF hem taýýar)' : ' · HD Interaktiw fizika sahnasy (movies/ ýüklenende SWF/MP4 açylar)');
+  document.getElementById('stageSub').textContent = hasOriginal ? 'Interaktiw animasiýa. Asyl nusga hem bar.' : 'Interaktiw animasiýa. Bu bölümde asyl nusga ýok.';
   const modeInd = document.getElementById('modeIndicator');
   modeInd.className = 'badge sim';
   modeInd.textContent = 'HD SIM';
@@ -1613,12 +1614,10 @@ function escapeHtml(value) {
 function updateReadyCounts() {
   const total = allVideos().length;
   const loaded = allVideos().filter(v => !!getMediaSource(v.id));
-  const swfCount = loaded.filter(v => getMediaSource(v.id).type === 'swf').length;
-  const videoCount = loaded.filter(v => getMediaSource(v.id).type === 'video').length;
   document.getElementById('sideReadyCount').textContent = loaded.length + '/' + total;
-  document.getElementById('playlistCountBadge').textContent = swfCount + ' SWF · ' + videoCount + ' wideo';
+  document.getElementById('playlistCountBadge').textContent = loaded.length + '/' + total;
   document.getElementById('statVideos').textContent = total;
-  document.getElementById('sideFolderInfo').textContent = 'Elýeterli media: ' + loaded.length + '/' + total + ' (' + swfCount + ' SWF, ' + videoCount + ' wideo).';
+  document.getElementById('sideFolderInfo').textContent = 'Asyl nusgalaryň sany ýokarda görkezilýär. Ähli bölümlerde interaktiw animasiýa bar.';
 }
 
 // === PLAYLIST, INDEX, COURSES, LESSONS, BOOKMARKS ===
@@ -1779,11 +1778,29 @@ function renderGloss(q = '') {
   if (stat) stat.textContent = GLOSSARY.length;
 }
 
+function updateReviewedButton() {
+  const button = document.getElementById('btnMarkReviewed');
+  const reviewed = state.reviewedVideos.includes(activeVideoId);
+  button.setAttribute('aria-pressed', String(reviewed));
+  button.classList.toggle('active', reviewed);
+}
+
+document.getElementById('btnMarkReviewed').addEventListener('click', () => {
+  const id = activeVideoId;
+  if (state.reviewedVideos.includes(id)) {
+    state.reviewedVideos = state.reviewedVideos.filter(value => value !== id);
+  } else {
+    state.reviewedVideos.push(id);
+  }
+  persist();
+  updateReviewedButton();
+});
+
 function refreshStats() {
   const done = state.done.length, total = totalLessons();
   document.getElementById('statDone').textContent = done;
   document.getElementById('progressDone').textContent = done + '/' + total;
-  document.getElementById('progressWatched').textContent = state.watchedVideos.length;
+  document.getElementById('progressWatched').textContent = state.reviewedVideos.length;
   document.getElementById('progressSaved').textContent = state.saved.length + state.videoBookmarks.length;
   const qs = Object.values(state.quiz);
   document.getElementById('progressQuiz').textContent = (qs.length ? Math.round(qs.reduce((a, b) => a + b, 0) / qs.length) : 0) + '%';
@@ -1840,7 +1857,7 @@ document.getElementById('btnRetryRuffle').addEventListener('click', () => {
   const previous = document.getElementById('ruffleScript'); if (previous) previous.remove();
   const script = document.createElement('script'); script.id = 'ruffleScript'; script.src = 'https://unpkg.com/@ruffle-rs/ruffle'; script.async = true;
   script.onload = () => { window.__ruffleLoadState = 'loaded'; checkRuffle(0); };
-  script.onerror = () => { window.__ruffleLoadState = 'failed'; checkRuffle(0); showPlayerNotice('SWF wideolary ýüklenmedi','Internet birikmesini barlaň. SWF üçin Ruffle gerek; MP4/Interaktiw animasiýa režimi işleýär.',false); };
+  script.onerror = () => { window.__ruffleLoadState = 'failed'; checkRuffle(0); showPlayerNotice('SWF wideolary ýüklenmedi','Asyl SWF animasiýasy üçin internet gerek. Häzir interaktiw animasiýa görkezilýär.',false); };
   document.head.appendChild(script);
 });
 document.getElementById('btnNoticeSim').addEventListener('click', () => { preferredMode='sim'; document.querySelectorAll('#modeSwitch .modeBtn').forEach(x => x.classList.toggle('active', x.dataset.mode==='sim')); loadVideo(activeVideoId,{pushHistory:false}); });
@@ -1951,8 +1968,8 @@ document.getElementById('resetProgressBtn').addEventListener('click', () => {
   openModal('Ösüş maglumatlaryny arassalamalymy?', '<p>Tamamlanan sapaklar, görülen bölümler, bellikler we synag netijeleri pozular.</p>', [
     {label:'Ýatyr', primary:false},
     {label:'Hawa, arassala', primary:true, onClick: () => {
-      state = {done:[], saved:[], videoBookmarks:[], watchedVideos:[], quiz:{}, lastLesson:0, lastVideo:'Sektion_1'};
-      persist(); renderCourses(); renderSaved(); updateBookmarkButton(); toast('Arassalandy');
+      state = {done:[], saved:[], videoBookmarks:[], watchedVideos:[], reviewedVideos:[], quiz:{}, lastLesson:0, lastVideo:'Sektion_1'};
+      persist(); renderCourses(); renderSaved(); updateBookmarkButton(); updateReviewedButton(); toast('Arassalandy');
     }}
   ]);
 });
@@ -2131,6 +2148,48 @@ Object.assign(UI_I18N.ru,{
   ,'Termin gözle...':'Поиск терминов…'
   ,'Dil saýla':'Выбрать язык'
 });
+Object.assign(UI_I18N.ru, {
+  "Pleýeri gaýtadan syna": "Повторить загрузку плеера",
+  "Interaktiw animasiýany aç": "Открыть интерактивную анимацию",
+  "Görüldi diýip belle": "Отметить просмотренным",
+  "Görüldi diýip bellenen bölümler": "Отмечено просмотренными",
+  "Asyl nusga": "Оригинал",
+  "Asyl nusgalar": "Оригиналы",
+  "SWF · Asyl animasiýa": "SWF · Оригинальная анимация",
+  "Interaktiw animasiýa. Asyl nusga hem bar.": "Интерактивная анимация. Есть и оригинал.",
+  "Interaktiw animasiýa. Bu bölümde asyl nusga ýok.": "Интерактивная анимация. У этого раздела нет оригинала.",
+  "Asyl nusgalaryň sany ýokarda görkezilýär. Ähli bölümlerde interaktiw animasiýa bar.": "Число оригиналов указано выше. Во всех разделах есть интерактивная анимация.",
+  "SWF pleýeri taýýar": "SWF-плеер готов",
+  "SWF pleýeri elýeterli däl": "SWF-плеер недоступен",
+  "SWF wideolary ýüklenmedi": "Не удалось загрузить SWF-плеер",
+  "Asyl SWF animasiýasy üçin internet gerek. Häzir interaktiw animasiýa görkezilýär.": "Для оригинала SWF нужен интернет. Сейчас открыта интерактивная анимация.",
+  "SWF açylmady": "Не удалось открыть SWF",
+  "Asyl animasiýa açylmady. Häzir interaktiw animasiýa görkezilýär.": "Оригинал не открылся. Сейчас показана интерактивная анимация.",
+  "Original media elýeterli däl": "Оригинал недоступен",
+  "Bu bölümde asyl nusga ýok. Häzir interaktiw animasiýa görkezilýär.": "У этого раздела нет оригинала. Сейчас показана интерактивная анимация.",
+  "HD Interaktiw Animasiýa": "Интерактивная анимация HD"
+});
+Object.assign(UI_I18N.en, {
+  "Pleýeri gaýtadan syna": "Retry loading the player",
+  "Interaktiw animasiýany aç": "Open interactive animation",
+  "Görüldi diýip belle": "Mark as reviewed",
+  "Görüldi diýip bellenen bölümler": "Marked as reviewed",
+  "Asyl nusga": "Original",
+  "Asyl nusgalar": "Originals",
+  "SWF · Asyl animasiýa": "SWF · Original animation",
+  "Interaktiw animasiýa. Asyl nusga hem bar.": "Interactive animation. An original is also available.",
+  "Interaktiw animasiýa. Bu bölümde asyl nusga ýok.": "Interactive animation. No original for this section.",
+  "Asyl nusgalaryň sany ýokarda görkezilýär. Ähli bölümlerde interaktiw animasiýa bar.": "The original media count is shown above. All sections have interactive animations.",
+  "SWF pleýeri taýýar": "SWF player is ready",
+  "SWF pleýeri elýeterli däl": "SWF player unavailable",
+  "SWF wideolary ýüklenmedi": "Could not load the SWF player",
+  "Asyl SWF animasiýasy üçin internet gerek. Häzir interaktiw animasiýa görkezilýär.": "The SWF original needs an internet connection. Showing the interactive animation.",
+  "SWF açylmady": "Could not open SWF",
+  "Asyl animasiýa açylmady. Häzir interaktiw animasiýa görkezilýär.": "The original failed to open. Showing the interactive animation.",
+  "Original media elýeterli däl": "Original media unavailable",
+  "Bu bölümde asyl nusga ýok. Häzir interaktiw animasiýa görkezilýär.": "This section has no original. Showing the interactive animation.",
+  "HD Interaktiw Animasiýa": "HD interactive animation"
+});
 const localizedTextSources = new WeakMap();
 function applyLanguage(lang, root=document.body) {
   if (!['tk','ru','en'].includes(lang)) lang='tk';
@@ -2214,8 +2273,8 @@ if ('serviceWorker' in navigator) {
 }
 
 
+loadVideo(state.lastVideo, {pushHistory: false});
 checkRuffle(0);
-loadVideo('Sektion_1', {pushHistory: false});
 </script>
 </body>
 </html>

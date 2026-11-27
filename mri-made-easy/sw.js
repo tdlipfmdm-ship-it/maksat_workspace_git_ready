@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mri-made-easy-pwa-v2';
+const CACHE_NAME = 'mri-made-easy-pwa-v3';
 const BASE = self.registration.scope;
 const CORE_FILES = [
   './',
